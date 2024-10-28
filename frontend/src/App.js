@@ -11,7 +11,7 @@ const App = () => {
   const { isAuthenticated } = useAuth0();
 
   return (
-    <div>
+    <div className='h-screen bg-gradient-to-tr from-pink-100 to-purple-100 flex items-center justify-center'>
       <Router>
         <Routes>
           <Route

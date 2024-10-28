@@ -6,6 +6,32 @@ import { useEventContext } from '../context/EventContext';
 import "react-big-calendar/lib/css/react-big-calendar.css";
 import EventModal from '../components/EventModal';
 import EventDetailsModal from '../components/EventDetailsModal';
+import './calendar.css'
+
+
+const eventStyleGetter = (event) => {
+  let backgroundColor = '#b182e3'; // Default color
+  let borderColor = '#8b5cf6'; // Default border color
+
+  // You can conditionally change the color based on event properties
+  if (event.type === 'specificType') {
+    backgroundColor = '#6d28d9'; // A different shade for specific types
+  }
+
+  const style = {
+    backgroundColor: backgroundColor,
+    border: `1px solid ${borderColor}`,
+    color: 'white',
+    borderRadius: '5px',
+    display: 'block',
+  };
+  return {
+    style: style,
+  };
+};
+
+
+
 
 const locales = { 'en-US': require('date-fns/locale/en-US') };
 const localizer = dateFnsLocalizer({ format, parse, startOfWeek, getDay, locales });
@@ -79,22 +105,31 @@ const MyCalendar = () => {
         onSelectSlot={handleSelectSlot}
         onSelectEvent={handleSelectEvent}
         style={{ height: 500 }}
+        eventPropGetter={eventStyleGetter}
       />
       
       <EventModal 
         isOpen={isEventModalOpen} 
-        onClose={() => setIsEventModalOpen(false)} 
+        onClose={() => {
+          setIsEventModalOpen(false);
+          setSelectedEvent(null); // Reset selectedEvent to null
+        }} 
         onSubmit={handleSubmitEvent} 
+        event={selectedEvent} 
         initialData={initialData} 
       />
-      
+
       <EventDetailsModal 
         isOpen={isDetailsModalOpen} 
-        onClose={() => setIsDetailsModalOpen(false)} 
+        onClose={() => {
+          setIsDetailsModalOpen(false);
+          setSelectedEvent(null); // Reset selectedEvent to null
+        }} 
         event={selectedEvent} 
         onEdit={handleEditEvent} 
         onDelete={handleDeleteEvent} 
       />
+
     </>
   );
 };

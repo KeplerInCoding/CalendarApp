@@ -1,0 +1,13 @@
+/* Custom styles for events */
+.rbc-event {
+    background-color: #a78bfa; /* Light purple for event background */
+    border: 1px solid #8b5cf6; /* Darker purple for event border */
+    color: white; /* Text color inside the event */
+  }
+  
+  /* Optional: Style for hovering over events */
+  .rbc-event:hover {
+    background-color: #8b5cf6; /* Darker purple on hover */
+    border-color: #6d28d9; /* Dark purple border on hover */
+  }
+  

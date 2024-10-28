@@ -63,7 +63,7 @@ exports.updateEvent = async (req, res) => {
     event.title = title || event.title;
     event.description = description || event.description;
     event.date = date || event.date;
-    event.end_date = date || event.end_date;
+    event.end_date = end_date || event.end_date;
 
     await event.save();
     console.log('Event updated successfully:', event);

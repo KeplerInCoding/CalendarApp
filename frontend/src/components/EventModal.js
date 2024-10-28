@@ -1,27 +1,31 @@
-// src/components/EventModal.js
 import React, { useState, useEffect } from 'react';
 
-const EventModal = ({ isOpen, onClose, onSubmit, initialData }) => {
+const EventModal = ({ isOpen, onClose, onSubmit, event }) => {
   const [title, setTitle] = useState('');
   const [description, setDescription] = useState('');
-  const [date, setStart] = useState(new Date());
-  const [end_date, setEnd] = useState(new Date());
+  const [date, setDate] = useState(new Date());
+  const [end_date, setEndDate] = useState(new Date());
 
   useEffect(() => {
-    if (initialData) {
-      setTitle(initialData.title);
-      setDescription(initialData.description);
-      setStart(new Date(initialData.date));
-      setEnd(new Date(initialData.end_date));
+    if (event) {
+      setTitle(event.title || '');
+      setDescription(event.description || '');
+      setDate(event.date ? event.date : new Date());
+      setEndDate(event.end_date ? event.end_date : new Date());
     } else {
+      // Clear values for adding a new event
       setTitle('');
       setDescription('');
-      setStart(new Date());
-      setEnd(new Date());
+      setDate(new Date());
+      setEndDate(new Date());
     }
-  }, [initialData, isOpen]);
+  }, [event, isOpen]);
 
   const handleSubmit = () => {
+    if (!title.trim()) {
+        alert("Title is required");
+        return;
+      }
     onSubmit({ title, description, date, end_date });
     onClose();
   };
@@ -30,8 +34,8 @@ const EventModal = ({ isOpen, onClose, onSubmit, initialData }) => {
 
   return (
     <div className="fixed inset-0 bg-gray-800 bg-opacity-50 flex justify-center items-center z-50">
-      <div className="bg-white rounded shadow-lg p-6 w-1/3">
-        <h2 className="text-xl font-semibold mb-4">{initialData ? 'Edit Event' : 'Add Event'}</h2>
+      <div className="bg-white/60 backdrop-blur-lg rounded shadow-lg shadow-slate-200 p-6 w-1/3">
+        <h2 className="text-xl font-semibold mb-4">{event ? 'Edit Event' : 'Add Event'}</h2>
         <div className="mb-4">
           <label className="block mb-1">Title</label>
           <input
@@ -39,6 +43,7 @@ const EventModal = ({ isOpen, onClose, onSubmit, initialData }) => {
             value={title}
             onChange={(e) => setTitle(e.target.value)}
             className="border rounded w-full p-2"
+            required
           />
         </div>
         <div className="mb-4">
@@ -53,23 +58,25 @@ const EventModal = ({ isOpen, onClose, onSubmit, initialData }) => {
           <label className="block mb-1">Start Date & Time</label>
           <input
             type="datetime-local"
-            value={date.toISOString().slice(0, 16)}
-            onChange={(e) => setStart(new Date(e.target.value))}
+            value={date ? date.toISOString().slice(0, 16) : ''}
+            onChange={(e) => setDate(new Date(e.target.value))}
             className="border rounded w-full p-2"
+            required
           />
         </div>
         <div className="mb-4">
           <label className="block mb-1">End Date & Time</label>
           <input
             type="datetime-local"
-            value={end_date.toISOString().slice(0, 16)}
-            onChange={(e) => setEnd(new Date(e.target.value))}
+            value={end_date ? end_date.toISOString().slice(0, 16) : ''}
+            onChange={(e) => setEndDate(new Date(e.target.value))}
             className="border rounded w-full p-2"
+            required
           />
         </div>
         <div className="flex justify-end">
-          <button onClick={onClose} className="bg-gray-500 text-white px-4 py-2 rounded mr-2">Cancel</button>
-          <button onClick={handleSubmit} className="bg-blue-500 text-white px-4 py-2 rounded">Save</button>
+          <button onClick={onClose} className="bg-pink-400 text-white px-4 py-2 rounded mr-2">Cancel</button>
+          <button onClick={handleSubmit} className="bg-purple-400 text-white px-4 py-2 rounded">Save</button>
         </div>
       </div>
     </div>
