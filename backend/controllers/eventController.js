@@ -6,15 +6,15 @@ exports.createEvent = async (req, res) => {
   console.log('Request body:', req.body);
 
   try {
-    const { title, description, date } = req.body;
+    const { title, description, date, end_date } = req.body;
 
     // Validate the incoming data
-    if (!title || !date || !req.userId) {
+    if (!title || !date || !end_date || !req.userId) {
       console.error('Validation Error: Missing required fields');
       return res.status(400).json({ error: 'Missing required fields' });
     }
 
-    const newEvent = await Event.create({ title, date, description, userId:req.userId });
+    const newEvent = await Event.create({ title, date, end_date, description, userId:req.userId });
     
     console.log('Event created:', newEvent);
     return res.status(201).json(newEvent);
@@ -47,7 +47,7 @@ exports.getEvents = async (req, res) => {
 
 exports.updateEvent = async (req, res) => {
   const { id } = req.params;
-  const { title, description, date } = req.body;
+  const { title, description, date, end_date } = req.body;
 
   console.log('Updating event with ID:', id);
   console.log('Request body:', req.body);
@@ -63,6 +63,7 @@ exports.updateEvent = async (req, res) => {
     event.title = title || event.title;
     event.description = description || event.description;
     event.date = date || event.date;
+    event.end_date = date || event.end_date;
 
     await event.save();
     console.log('Event updated successfully:', event);

@@ -11,6 +11,10 @@ const Event = sequelize.define('Event', {
     type: DataTypes.DATE,
     allowNull: false,
   },
+  end_date: {
+    type: DataTypes.DATE,
+    allowNull: false,
+  },
   description: {
     type: DataTypes.TEXT,
   },

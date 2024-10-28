@@ -44,16 +44,8 @@ export const EventProvider = ({ children }) => {
         authorizationParams: { audience: process.env.REACT_APP_AUTH0_AUDIENCE }
       });
 
-      // Transform eventData to match the expected backend structure
-      const formattedEventData = {
-        title: eventData.title,
-        date: eventData.date, // Use 'start' as the main event date
-        description: eventData.description,
-        userId: eventData.userId || undefined // Include userId if provided, else set to undefined
-      };
-
-      console.log('Event Data to Create:', formattedEventData); // Log the transformed event data
-      const res = await axios.post(`${API_BASE_URL}/events`, formattedEventData, {
+      console.log('Event Data to Create:', eventData); // Log the transformed event data
+      const res = await axios.post(`${API_BASE_URL}/events`, eventData, {
         headers: { Authorization: `Bearer ${token}` },
       });
       setEvents((prevEvents) => [...prevEvents, res.data]);
