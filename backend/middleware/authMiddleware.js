@@ -1,19 +1,9 @@
 // backend/middleware/authMiddleware.js
-const { verifyToken } = require('../utils/auth');
+const { auth } = require('express-oauth2-jwt-bearer');
 
-const authMiddleware = (req, res, next) => {
-  const token = req.headers.authorization?.split(' ')[1];
-  if (!token) {
-    return res.status(401).json({ message: 'No token, authorization denied' });
-  }
+const checkJwt = auth({
+  audience: 'https://dev-qfiyzdi4imx1b4bw.us.auth0.com/api/v2/',
+  issuerBaseURL: `dev-qfiyzdi4imx1b4bw.us.auth0.com`,
+});
 
-  const decoded = verifyToken(token);
-  if (!decoded) {
-    return res.status(401).json({ message: 'Token is not valid' });
-  }
-
-  req.userId = decoded.id;
-  next();
-};
-
-module.exports = authMiddleware;
+module.exports = checkJwt;

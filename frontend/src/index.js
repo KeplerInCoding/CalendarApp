@@ -3,6 +3,7 @@ import { createRoot } from 'react-dom/client';
 import { Auth0Provider } from '@auth0/auth0-react';
 import App from './App';
 import './index.css';
+import { EventProvider } from './context/EventContext';
 
 // Get the root element
 const container = document.getElementById('root');
@@ -19,6 +20,9 @@ root.render(
       redirect_uri: process.env.REACT_APP_AUTH0_REDIRECT_URI,
     }}
   >
+    <EventProvider>
     <App />
+    </EventProvider>
+    
   </Auth0Provider>
 );
