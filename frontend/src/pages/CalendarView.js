@@ -95,8 +95,14 @@ const MyCalendar = () => {
   }));
 
   return (
-    <>
-      <Calendar
+
+    <div className='md:h-11/12 md:w-11/12 ' style={{ position: 'relative', overflow: 'hidden' }}>
+
+      <div className="circle circle1 bg-gradient-to-br from-cyan-500 to-green-500 rounded-full w-80 h-80"></div>
+      <div className="circle cirlce2 bg-gradient-to-br from-rose-500 to-slate-500 rounded-full w-80 h-80"></div>
+      
+
+      <Calendar className="backdrop-blur-lg"
         localizer={localizer}
         events={mappedEvents}
         startAccessor="start"
@@ -130,7 +136,7 @@ const MyCalendar = () => {
         onDelete={handleDeleteEvent} 
       />
 
-    </>
+    </div>
   );
 };
 

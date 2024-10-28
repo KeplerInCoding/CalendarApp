@@ -10,4 +10,36 @@
     background-color: #8b5cf6; /* Darker purple on hover */
     border-color: #6d28d9; /* Dark purple border on hover */
   }
+
+
+
+ /* styles.css */
+@keyframes moveCircle {
+    0% {
+      transform: translate(0, 0);
+    }
+    50% {
+      transform: translate(30px, 30px);
+    }
+    100% {
+      transform: translate(0, 0);
+    }
+  }
+  
+  .circle {
+    position: absolute; /* Position circles absolutely */
+    border-radius: 50%;
+    animation: moveCircle 5s linear infinite; /* Animation duration and repetition */
+  }
+  
+  /* Specific styles for the circles */
+  .circle1 {
+    top: 30%;
+    left: 80%;
+  }
+  
+  .circle2 {
+    top: 10%;
+    left: 20%;
+  }
   
