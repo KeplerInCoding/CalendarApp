@@ -7,14 +7,31 @@ const cors = require('cors');
 
 const app = express(); // Initialize 'app' here
 
+const allowedOrigins = [
+  'http://localhost:3000', // Local development
+  'https://mycalendarappeventmngmt.netlify.app', // Production frontend
+];
+
+// CORS configuration
 app.use(cors({
-  origin: 'http://localhost:3000', // Replace this with your frontend URL
+  origin: function (origin, callback) {
+    // Allow requests with no origin (like mobile apps or curl requests)
+    if (!origin || allowedOrigins.indexOf(origin) !== -1) {
+      callback(null, true);
+    } else {
+      callback(new Error('Not allowed by CORS'));
+    }
+  },
   credentials: true, // Allow credentials if needed
 }));
 
 app.use(express.json());
 
 app.use('/api/v1/events', eventRoutes);
+
+app.get('/', (req, res) => {
+  res.send('Backend is running properly!');
+});
 
 const PORT = process.env.PORT || 5000;
 
