@@ -15,7 +15,7 @@ const Event = sequelize.define('Event', {
     type: DataTypes.TEXT,
   },
   userId: {
-    type: DataTypes.INTEGER,
+    type: DataTypes.STRING,
     allowNull: false,
   },
 });

@@ -14,15 +14,17 @@ const root = createRoot(container);
 // Render the App within the Auth0Provider
 root.render(
   <Auth0Provider
-    domain={process.env.REACT_APP_AUTH0_DOMAIN}
-    clientId={process.env.REACT_APP_AUTH0_CLIENT_ID}
-    authorizationParams={{
-      redirect_uri: process.env.REACT_APP_AUTH0_REDIRECT_URI,
-    }}
-  >
-    <EventProvider>
+  domain={process.env.REACT_APP_AUTH0_DOMAIN}
+  clientId={process.env.REACT_APP_AUTH0_CLIENT_ID}
+  authorizationParams={{
+    redirect_uri: window.location.origin,
+    audience: process.env.REACT_APP_AUTH0_AUDIENCE, // Use the API Base URL as Audience
+    scope: "openid profile email"
+  }}
+>
+  <EventProvider>
     <App />
-    </EventProvider>
-    
-  </Auth0Provider>
+  </EventProvider>
+</Auth0Provider>
+
 );

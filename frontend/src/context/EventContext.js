@@ -10,63 +10,87 @@ export const EventProvider = ({ children }) => {
   const [events, setEvents] = useState([]);
   const API_BASE_URL = process.env.REACT_APP_API_BASE_URL;
 
-  // Memoize fetchEvents with useCallback to avoid recreating it on each render
+  // Fetch events for the authenticated user
   const fetchEvents = useCallback(async () => {
+    if (!isAuthenticated) return; // Exit if not authenticated
     try {
-      const token = await getAccessTokenSilently();
-      const res = await axios.get(`${API_BASE_URL}/events`, {
-        headers: { Authorization: `Bearer ${token}` }
+      // const accessToken = await getAccessTokenSilently();
+
+      const accessToken = await getAccessTokenSilently({
+        authorizationParams: { audience: process.env.REACT_APP_AUTH0_AUDIENCE }
       });
-      setEvents(res.data);
+      
+
+      const response = await axios.get(`${API_BASE_URL}/events`, {
+        headers: {
+          Authorization: `Bearer ${accessToken}`,
+        },
+      });
+      console.log('Events fetched:', response.data);
+      setEvents(response.data); // Set the fetched events directly
     } catch (error) {
-      console.error(error);
+      console.error('Error fetching events:', error);
+      if (error.response) {
+        console.error('Response data:', error.response.data);
+        console.error('Response status:', error.response.status);
+        console.error('Response headers:', error.response.headers);
+      }
     }
-  }, [getAccessTokenSilently, API_BASE_URL]);
+  }, [isAuthenticated, getAccessTokenSilently, API_BASE_URL]);
 
   const createEvent = async (eventData) => {
+    if (!isAuthenticated) return; // Exit if not authenticated
     try {
-      const token = await getAccessTokenSilently();
+      const token = await getAccessTokenSilently({
+        audience: API_BASE_URL,
+      });
       const res = await axios.post(`${API_BASE_URL}/events`, eventData, {
-        headers: { Authorization: `Bearer ${token}` }
+        headers: { Authorization: `Bearer ${token}` },
       });
       setEvents((prevEvents) => [...prevEvents, res.data]);
     } catch (error) {
-      console.error(error);
+      console.error('Error creating event:', error);
     }
   };
 
   const updateEvent = async (id, updatedData) => {
+    if (!isAuthenticated) return; // Exit if not authenticated
     try {
-      const token = await getAccessTokenSilently();
-      await axios.put(`${API_BASE_URL}/events/${id}`, updatedData, {
-        headers: { Authorization: `Bearer ${token}` }
+      const token = await getAccessTokenSilently({
+        audience: API_BASE_URL,
+      });
+      const res = await axios.put(`${API_BASE_URL}/events/${id}`, updatedData, {
+        headers: { Authorization: `Bearer ${token}` },
       });
       setEvents((prevEvents) =>
-        prevEvents.map((event) => (event.id === id ? { ...event, ...updatedData } : event))
+        prevEvents.map((event) => (event.id === id ? { ...event, ...res.data } : event))
       );
     } catch (error) {
-      console.error(error);
+      console.error('Error updating event:', error);
     }
   };
 
   const deleteEvent = async (id) => {
+    if (!isAuthenticated) return; // Exit if not authenticated
     try {
-      const token = await getAccessTokenSilently();
+      const token = await getAccessTokenSilently({
+        audience: API_BASE_URL,
+      });
       await axios.delete(`${API_BASE_URL}/events/${id}`, {
-        headers: { Authorization: `Bearer ${token}` }
+        headers: { Authorization: `Bearer ${token}` },
       });
       setEvents((prevEvents) => prevEvents.filter((event) => event.id !== id));
     } catch (error) {
-      console.error(error);
+      console.error('Error deleting event:', error);
     }
   };
 
   useEffect(() => {
-    if (isAuthenticated) fetchEvents();
-  }, [isAuthenticated, fetchEvents]);
+    fetchEvents();
+  }, [fetchEvents]);
 
   return (
-    <EventContext.Provider value={{ events, createEvent, updateEvent, deleteEvent, fetchEvents }}>
+    <EventContext.Provider value={{ events, createEvent, updateEvent, deleteEvent }}>
       {children}
     </EventContext.Provider>
   );

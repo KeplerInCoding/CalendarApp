@@ -5,7 +5,10 @@ const authMiddleware = require('../middleware/authMiddleware');
 const router = express.Router();
 
 router.post('/', authMiddleware, createEvent);
-router.get('/', authMiddleware, getEvents);
+router.get('/', authMiddleware, (req, res, next) => {
+    console.log('Fetching events...');
+    getEvents(req, res, next);
+  });
 router.put('/:id', authMiddleware, updateEvent);
 router.delete('/:id', authMiddleware, deleteEvent);
 

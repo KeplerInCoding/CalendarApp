@@ -5,6 +5,7 @@ import { BrowserRouter as Router, Route, Routes, Navigate } from 'react-router-d
 import CalendarView from './pages/CalendarView';
 import Login from './pages/Login';
 import Home from './pages/Home';
+import Callback from './pages/Callback';
 
 const App = () => {
   const { isAuthenticated } = useAuth0();
@@ -20,6 +21,7 @@ const App = () => {
             }
           />
           <Route path="/login" element={<Login />} />
+          <Route path="/callback" element={<Callback />} />
           <Route
             path="/calendar"
             element={isAuthenticated ? <CalendarView /> : <Navigate to="/" />}

@@ -13,12 +13,24 @@ exports.createEvent = async (req, res) => {
 
 exports.getEvents = async (req, res) => {
   try {
+    // Log the userId to verify it's being passed correctly
+    console.log("User ID from request:", req.userId);
+
+    // Fetch events based on userId
     const events = await Event.findAll({ where: { userId: req.userId } });
+
+    // Log the events to check what is retrieved
+    console.log("Fetched events:", events);
+
     res.json(events);
   } catch (error) {
+    // Log the error for debugging
+    console.error("Error fetching events:", error);
+
     res.status(500).json({ message: 'Failed to retrieve events' });
   }
 };
+
 
 exports.updateEvent = async (req, res) => {
   try {

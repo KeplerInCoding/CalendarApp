@@ -1,4 +1,5 @@
-import React, { useEffect } from 'react';
+// src/components/MyCalendar.js
+import React from 'react';
 import { Calendar, dateFnsLocalizer } from 'react-big-calendar';
 import { format, parse, startOfWeek, getDay } from 'date-fns';
 import { useEventContext } from '../context/EventContext';
@@ -8,16 +9,14 @@ const locales = { 'en-US': require('date-fns/locale/en-US') };
 const localizer = dateFnsLocalizer({ format, parse, startOfWeek, getDay, locales });
 
 const MyCalendar = () => {
-  const { events, createEvent, updateEvent, deleteEvent, fetchEvents } = useEventContext();
-
-  // Fetch events on component mount, add fetchEvents to dependency array
-  useEffect(() => {
-    fetchEvents();
-  }, [fetchEvents]);
+  const { events, createEvent, updateEvent, deleteEvent } = useEventContext();
 
   const handleSelectSlot = ({ start, end }) => {
-    const title = prompt('Enter a new event title');
-    if (title) createEvent({ start, end, title });
+    const title = prompt('Enter event title');
+    const description = prompt('Enter event description');
+    if (title && description) {
+      createEvent({ start, end, title, description });
+    }
   };
 
   const handleSelectEvent = (event) => {
@@ -26,8 +25,9 @@ const MyCalendar = () => {
       deleteEvent(event.id);
     } else if (action === 'edit') {
       const newTitle = prompt("Edit event title:", event.title);
-      if (newTitle) {
-        updateEvent(event.id, { title: newTitle });
+      const newDescription = prompt("Edit event description:", event.description);
+      if (newTitle && newDescription) {
+        updateEvent(event.id, { title: newTitle, description: newDescription });
       }
     }
   };
