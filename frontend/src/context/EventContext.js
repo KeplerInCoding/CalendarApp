@@ -42,16 +42,35 @@ export const EventProvider = ({ children }) => {
     if (!isAuthenticated) return; // Exit if not authenticated
     try {
       const token = await getAccessTokenSilently({
-        audience: API_BASE_URL,
+        authorizationParams: { audience: process.env.REACT_APP_AUTH0_AUDIENCE }
       });
-      const res = await axios.post(`${API_BASE_URL}/events`, eventData, {
+      
+      // Transform eventData to match the expected backend structure
+      const formattedEventData = {
+        title: eventData.title,
+        date: eventData.start, // Assuming 'start' is the main event date
+        description: eventData.description,
+        userId: eventData.userId // Include userId if required
+      };
+  
+      console.log('Event Data to Create:', formattedEventData); // Log the transformed event data
+      const res = await axios.post(`${API_BASE_URL}/events`, formattedEventData, {
         headers: { Authorization: `Bearer ${token}` },
       });
       setEvents((prevEvents) => [...prevEvents, res.data]);
+      await fetchEvents();
     } catch (error) {
       console.error('Error creating event:', error);
+      if (error.response) {
+        console.error('Response data:', error.response.data);
+        console.error('Response status:', error.response.status);
+        console.error('Response headers:', error.response.headers);
+      }
     }
   };
+  
+  
+  
 
   const updateEvent = async (id, updatedData) => {
     if (!isAuthenticated) return; // Exit if not authenticated

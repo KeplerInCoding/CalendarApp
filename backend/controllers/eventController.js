@@ -2,19 +2,32 @@
 const Event = require('../models/Event');
 
 exports.createEvent = async (req, res) => {
+  console.log('Creating event...');
+  console.log('Request body:', req.body);
+
   try {
-    const { title, date, description } = req.body;
-    const newEvent = await Event.create({ title, date, description, userId: req.userId });
-    res.status(201).json(newEvent);
+    const { title, description, date } = req.body;
+
+    // Validate the incoming data
+    if (!title || !date || !req.userId) {
+      console.error('Validation Error: Missing required fields');
+      return res.status(400).json({ error: 'Missing required fields' });
+    }
+
+    const newEvent = await Event.create({ title, date, description, userId:req.userId });
+    
+    console.log('Event created:', newEvent);
+    return res.status(201).json(newEvent);
   } catch (error) {
-    res.status(500).json({ message: 'Failed to create event' });
+    console.error('Error creating event:', error);
+    return res.status(500).json({ error: 'Internal Server Error' });
   }
 };
 
 exports.getEvents = async (req, res) => {
   try {
     // Log the userId to verify it's being passed correctly
-    console.log("User ID from request:", req.userId);
+    // console.log("User ID from request:", req.userId);
 
     // Fetch events based on userId
     const events = await Event.findAll({ where: { userId: req.userId } });

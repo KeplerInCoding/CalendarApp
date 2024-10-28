@@ -6,7 +6,7 @@ const router = express.Router();
 
 router.post('/', authMiddleware, createEvent);
 router.get('/', authMiddleware, (req, res, next) => {
-    console.log('Fetching events...');
+    // console.log('Fetching events...');
     getEvents(req, res, next);
   });
 router.put('/:id', authMiddleware, updateEvent);

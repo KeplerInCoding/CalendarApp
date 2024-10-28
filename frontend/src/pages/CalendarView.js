@@ -1,4 +1,3 @@
-// src/components/MyCalendar.js
 import React from 'react';
 import { Calendar, dateFnsLocalizer } from 'react-big-calendar';
 import { format, parse, startOfWeek, getDay } from 'date-fns';
@@ -11,13 +10,23 @@ const localizer = dateFnsLocalizer({ format, parse, startOfWeek, getDay, locales
 const MyCalendar = () => {
   const { events, createEvent, updateEvent, deleteEvent } = useEventContext();
 
-  const handleSelectSlot = ({ start, end }) => {
+  const handleSelectSlot = ({ start }) => {
     const title = prompt('Enter event title');
     const description = prompt('Enter event description');
     if (title && description) {
-      createEvent({ start, end, title, description });
+      // Create an event with the same start and end time
+      createEvent({ date: start, title, description });
     }
   };
+
+  // Map events to include start and end
+  const mappedEvents = events.map(event => ({
+    id: event.id,
+    title: event.title,
+    description: event.description,
+    start: new Date(event.date), // Convert string to Date
+    end: new Date(event.date),   // Same for end
+  }));
 
   const handleSelectEvent = (event) => {
     const action = prompt('Enter "edit" to update or "delete" to remove the event');
@@ -35,7 +44,7 @@ const MyCalendar = () => {
   return (
     <Calendar
       localizer={localizer}
-      events={events}
+      events={mappedEvents}
       startAccessor="start"
       endAccessor="end"
       selectable
