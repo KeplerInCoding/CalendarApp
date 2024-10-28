@@ -15,6 +15,7 @@ const MyCalendar = () => {
     const description = prompt('Enter event description');
     if (title && description) {
       // Create an event with the same start and end time
+      console.log("start in creating:",start);
       createEvent({ date: start, title, description });
     }
   };

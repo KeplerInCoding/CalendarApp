@@ -46,24 +46,34 @@ exports.getEvents = async (req, res) => {
 
 
 exports.updateEvent = async (req, res) => {
+  const { id } = req.params;
+  const { title, description, date } = req.body;
+
+  console.log('Updating event with ID:', id);
+  console.log('Request body:', req.body);
+
   try {
-    const { title, date, description } = req.body;
-    const event = await Event.findOne({ where: { id: req.params.id, userId: req.userId } });
+    const event = await Event.findByPk(id);
 
     if (!event) {
       return res.status(404).json({ message: 'Event not found' });
     }
 
-    event.title = title;
-    event.date = date;
-    event.description = description;
-    await event.save();
+    // Update the event fields
+    event.title = title || event.title;
+    event.description = description || event.description;
+    event.date = date || event.date;
 
-    res.json(event);
+    await event.save();
+    console.log('Event updated successfully:', event);
+
+    return res.status(200).json(event);
   } catch (error) {
-    res.status(500).json({ message: 'Failed to update event' });
+    console.error('Error updating event:', error);
+    return res.status(500).json({ message: 'Failed to update event' });
   }
 };
+
 
 exports.deleteEvent = async (req, res) => {
   try {

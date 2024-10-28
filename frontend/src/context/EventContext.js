@@ -14,12 +14,9 @@ export const EventProvider = ({ children }) => {
   const fetchEvents = useCallback(async () => {
     if (!isAuthenticated) return; // Exit if not authenticated
     try {
-      // const accessToken = await getAccessTokenSilently();
-
       const accessToken = await getAccessTokenSilently({
         authorizationParams: { audience: process.env.REACT_APP_AUTH0_AUDIENCE }
       });
-      
 
       const response = await axios.get(`${API_BASE_URL}/events`, {
         headers: {
@@ -34,6 +31,8 @@ export const EventProvider = ({ children }) => {
         console.error('Response data:', error.response.data);
         console.error('Response status:', error.response.status);
         console.error('Response headers:', error.response.headers);
+      } else {
+        console.error('Error message:', error.message);
       }
     }
   }, [isAuthenticated, getAccessTokenSilently, API_BASE_URL]);
@@ -44,39 +43,38 @@ export const EventProvider = ({ children }) => {
       const token = await getAccessTokenSilently({
         authorizationParams: { audience: process.env.REACT_APP_AUTH0_AUDIENCE }
       });
-      
+
       // Transform eventData to match the expected backend structure
       const formattedEventData = {
         title: eventData.title,
-        date: eventData.start, // Assuming 'start' is the main event date
+        date: eventData.date, // Use 'start' as the main event date
         description: eventData.description,
-        userId: eventData.userId // Include userId if required
+        userId: eventData.userId || undefined // Include userId if provided, else set to undefined
       };
-  
+
       console.log('Event Data to Create:', formattedEventData); // Log the transformed event data
       const res = await axios.post(`${API_BASE_URL}/events`, formattedEventData, {
         headers: { Authorization: `Bearer ${token}` },
       });
       setEvents((prevEvents) => [...prevEvents, res.data]);
-      await fetchEvents();
+      // No need to fetch events again after creating, as we just added the new event
     } catch (error) {
       console.error('Error creating event:', error);
       if (error.response) {
         console.error('Response data:', error.response.data);
         console.error('Response status:', error.response.status);
         console.error('Response headers:', error.response.headers);
+      } else {
+        console.error('Error message:', error.message);
       }
     }
   };
-  
-  
-  
 
   const updateEvent = async (id, updatedData) => {
     if (!isAuthenticated) return; // Exit if not authenticated
     try {
       const token = await getAccessTokenSilently({
-        audience: API_BASE_URL,
+        authorizationParams: { audience: process.env.REACT_APP_AUTH0_AUDIENCE }
       });
       const res = await axios.put(`${API_BASE_URL}/events/${id}`, updatedData, {
         headers: { Authorization: `Bearer ${token}` },
@@ -86,6 +84,13 @@ export const EventProvider = ({ children }) => {
       );
     } catch (error) {
       console.error('Error updating event:', error);
+      if (error.response) {
+        console.error('Response data:', error.response.data);
+        console.error('Response status:', error.response.status);
+        console.error('Response headers:', error.response.headers);
+      } else {
+        console.error('Error message:', error.message);
+      }
     }
   };
 
@@ -93,7 +98,7 @@ export const EventProvider = ({ children }) => {
     if (!isAuthenticated) return; // Exit if not authenticated
     try {
       const token = await getAccessTokenSilently({
-        audience: API_BASE_URL,
+        authorizationParams: { audience: process.env.REACT_APP_AUTH0_AUDIENCE }
       });
       await axios.delete(`${API_BASE_URL}/events/${id}`, {
         headers: { Authorization: `Bearer ${token}` },
@@ -101,6 +106,13 @@ export const EventProvider = ({ children }) => {
       setEvents((prevEvents) => prevEvents.filter((event) => event.id !== id));
     } catch (error) {
       console.error('Error deleting event:', error);
+      if (error.response) {
+        console.error('Response data:', error.response.data);
+        console.error('Response status:', error.response.status);
+        console.error('Response headers:', error.response.headers);
+      } else {
+        console.error('Error message:', error.message);
+      }
     }
   };
 
