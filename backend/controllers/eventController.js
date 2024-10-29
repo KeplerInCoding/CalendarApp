@@ -2,8 +2,6 @@
 const Event = require('../models/Event');
 
 exports.createEvent = async (req, res) => {
-  console.log('Creating event...');
-  console.log('Request body:', req.body);
 
   try {
     const { title, description, date, end_date } = req.body;
@@ -16,7 +14,6 @@ exports.createEvent = async (req, res) => {
 
     const newEvent = await Event.create({ title, date, end_date, description, userId:req.userId });
     
-    console.log('Event created:', newEvent);
     return res.status(201).json(newEvent);
   } catch (error) {
     console.error('Error creating event:', error);
@@ -33,7 +30,7 @@ exports.getEvents = async (req, res) => {
     const events = await Event.findAll({ where: { userId: req.userId } });
 
     // Log the events to check what is retrieved
-    console.log("Fetched events:", events);
+    // console.log("Fetched events:", events);
 
     res.json(events);
   } catch (error) {
@@ -49,8 +46,8 @@ exports.updateEvent = async (req, res) => {
   const { id } = req.params;
   const { title, description, date, end_date } = req.body;
 
-  console.log('Updating event with ID:', id);
-  console.log('Request body:', req.body);
+  // console.log('Updating event with ID:', id);
+  // console.log('Request body:', req.body);
 
   try {
     const event = await Event.findByPk(id);
@@ -66,7 +63,7 @@ exports.updateEvent = async (req, res) => {
     event.end_date = end_date || event.end_date;
 
     await event.save();
-    console.log('Event updated successfully:', event);
+    // console.log('Event updated successfully:', event);
 
     return res.status(200).json(event);
   } catch (error) {

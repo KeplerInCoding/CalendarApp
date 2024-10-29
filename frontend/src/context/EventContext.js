@@ -23,7 +23,7 @@ export const EventProvider = ({ children }) => {
           Authorization: `Bearer ${accessToken}`,
         },
       });
-      console.log('Events fetched:', response.data);
+      // console.log('Events fetched:', response.data);
       setEvents(response.data); // Set the fetched events directly
     } catch (error) {
       console.error('Error fetching events:', error);
@@ -44,7 +44,7 @@ export const EventProvider = ({ children }) => {
         authorizationParams: { audience: process.env.REACT_APP_AUTH0_AUDIENCE }
       });
 
-      console.log('Event Data to Create:', eventData); // Log the transformed event data
+      // console.log('Event Data to Create:', eventData); // Log the transformed event data
       const res = await axios.post(`${API_BASE_URL}/events`, eventData, {
         headers: { Authorization: `Bearer ${token}` },
       });
