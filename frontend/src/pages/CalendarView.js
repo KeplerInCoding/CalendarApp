@@ -1,12 +1,14 @@
 // src/components/MyCalendar.js
 import React, { useState } from 'react';
 import { Calendar, dateFnsLocalizer } from 'react-big-calendar';
-import { format, parse, startOfWeek, getDay } from 'date-fns';
+import { format, parse, startOfWeek, getDay } from 'date-fns';import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+import { faPlus, faRightFromBracket } from '@fortawesome/free-solid-svg-icons';
 import { useEventContext } from '../context/EventContext';
 import "react-big-calendar/lib/css/react-big-calendar.css";
 import EventModal from '../components/EventModal';
 import EventDetailsModal from '../components/EventDetailsModal';
 import './calendar.css'
+import { useAuth0 } from '@auth0/auth0-react';
 
 
 const eventStyleGetter = (event) => {
@@ -43,6 +45,7 @@ const MyCalendar = () => {
   const [isDetailsModalOpen, setIsDetailsModalOpen] = useState(false);
   const [selectedEvent, setSelectedEvent] = useState(null);
   const [initialData, setInitialData] = useState(null);
+  const { logout } = useAuth0();
 
   const handleSelectSlot = ({ start, end }) => {
     setInitialData(null);
@@ -94,13 +97,18 @@ const MyCalendar = () => {
     end: new Date(event.end_date), // Assuming 'end_date' is your event end date
   }));
 
+
+  const handleAddEventClick = () => {
+    handleSelectSlot({ start: new Date(), end: new Date() });
+  };
+
   return (
 
     <div className='md:h-11/12 md:w-11/12 ' style={{ position: 'relative', overflow: 'hidden' }}>
 
       <div className="circle circle1 bg-gradient-to-br from-cyan-500 to-green-500 rounded-full w-80 h-80"></div>
       <div className="circle cirlce2 bg-gradient-to-br from-rose-500 to-slate-500 rounded-full w-80 h-80"></div>
-      
+
 
       <Calendar className="backdrop-blur-lg"
         localizer={localizer}
@@ -113,6 +121,25 @@ const MyCalendar = () => {
         style={{ height: 500 }}
         eventPropGetter={eventStyleGetter}
       />
+
+      {/* Add Event button */}
+      <div className="m-4 flex gap-5">
+        <button
+          onClick={handleAddEventClick}
+          className="px-4 py-2 bg-purple-500 text-white font-semibold rounded hover:bg-purple-600"
+        >
+          <FontAwesomeIcon icon={faPlus} className="mr-2" />
+          Add Event
+        </button>
+        <button 
+        onClick={() => logout({ returnTo: window.location.origin })} 
+        className=" px-4 py-2 bg-pink-400 text-white font-semibold rounded hover:bg-pink-500"
+      >
+        <FontAwesomeIcon icon={faRightFromBracket} className="mr-2 " /> Logout
+      </button>
+      </div>
+
+      
       
       <EventModal 
         isOpen={isEventModalOpen} 
